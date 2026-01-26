@@ -9,90 +9,68 @@ import certifi
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="Vibe", layout="wide", page_icon="📚")
 
-# --- CUSTOM CSS (Aggressive Override for Button Visibility) ---
+# --- CUSTOM CSS (Forced Black Buttons with White Text) ---
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     
-    /* Global App Background */
-    .stApp { 
-        background-color: #F1F5F9 !important; 
-        font-family: 'Inter', sans-serif; 
-    }
-    
-    /* Sidebar Styling */
-    [data-testid="stSidebar"] { 
-        background-color: #E2E8F0 !important; 
-    }
-    
-    /* Book Card Styling */
-    .book-card {
-        background-color: #FFFFFF !important; 
-        border: 1px solid #E2E8F0 !important; 
-        border-radius: 12px;
-        padding: 24px; 
-        margin-bottom: 24px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    }
-    
-    /* 1. PRIMARY BUTTON (SEARCH) - Force White Text */
-    div.stButton > button[kind="primary"] { 
-        background-color: #4338CA !important; 
+    /* Global Background */
+    .stApp { background-color: #F1F5F9 !important; font-family: 'Inter', sans-serif; }
+    [data-testid="stSidebar"] { background-color: #E2E8F0 !important; }
+
+    /* 1. PRIMARY BUTTON (SEARCH/LOGIN) - Stay Indigo but ensure White Text */
+    div.stButton > button[kind="primary"] {
+        background-color: #4338CA !important;
         border: none !important;
-        border-radius: 8px !important;
-        height: 3rem;
-        width: 100%;
+        color: white !important;
     }
-    
-    /* Force text white inside primary button */
-    div.stButton > button[kind="primary"] p,
-    div.stButton > button[kind="primary"] span {
+    div.stButton > button[kind="primary"] * { color: white !important; font-weight: 700 !important; }
+
+    /* 2. ALL OTHER BUTTONS (READ, PDF, SAVE, RATE, SIGN OUT) - Forced Black */
+    .stButton > button, 
+    [data-testid="stBaseButton-secondary"],
+    [data-testid="stBaseButton-popover"],
+    button[data-testid="baseButton-headerNoPadding"],
+    div[data-testid="stPopover"] > button {
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        border: 1px solid #000000 !important;
+        border-radius: 8px !important;
+        opacity: 1 !important;
+    }
+
+    /* Target internal text/spans for all secondary buttons to force White */
+    .stButton > button p, 
+    .stButton > button span,
+    [data-testid="stBaseButton-secondary"] p,
+    [data-testid="stBaseButton-popover"] p,
+    div[data-testid="stPopover"] > button p {
         color: #FFFFFF !important;
         font-weight: 600 !important;
     }
 
-    /* 2. SECONDARY BUTTONS (READ/PDF/SAVE) - Aggressive White Background */
-    /* We target the base button class and the secondary kind */
-    div.stButton > button[kind="secondary"], 
-    div[data-testid="stPopover"] > button { 
-        background-color: #FFFFFF !important; 
-        color: #1E293B !important; 
-        border: 1px solid #CBD5E1 !important; 
-        border-radius: 8px !important;
-        width: 100%;
-        opacity: 1 !important; /* Prevents dimmed look */
+    /* Hover State - Turn slightly grey so user knows they clicked */
+    .stButton > button:hover, div[data-testid="stPopover"] > button:hover {
+        background-color: #333333 !important;
+        border-color: #333333 !important;
     }
 
-    /* Targeting the internal text tag specifically */
-    div.stButton > button[kind="secondary"] p,
-    div.stButton > button[kind="secondary"] span,
-    div[data-testid="stPopover"] > button p {
-        color: #1E293B !important;
-        font-weight: 500 !important;
-    }
-
-    /* Hover State for Secondary/Popover Buttons */
-    div.stButton > button[kind="secondary"]:hover,
-    div[data-testid="stPopover"] > button:hover { 
-        border-color: #4338CA !important; 
-        background-color: #F8FAFC !important;
-    }
-    
-    div.stButton > button[kind="secondary"]:hover p,
-    div.stButton > button[kind="secondary"]:hover span {
-        color: #4338CA !important;
-    }
-
-    /* 3. INPUT FIELD TEXT FIX */
-    .stTextInput input { 
-        background-color: #FFFFFF !important; 
-        color: #0F172A !important; 
+    /* 3. INPUT FIELD */
+    .stTextInput input {
+        background-color: #FFFFFF !important;
+        color: #000000 !important;
         border: 1px solid #CBD5E1 !important;
     }
-    
-    /* Typography Visibility */
-    h1, h2, h3 { color: #1E293B !important; }
-    p, span, label { color: #334155 !important; }
+
+    /* 4. BOOK CARD Styling */
+    .book-card {
+        background-color: #FFFFFF !important;
+        border: 1px solid #E2E8F0 !important;
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 24px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -326,5 +304,6 @@ else:
 
 
                 st.markdown('</div>', unsafe_allow_html=True)
+
 
 
