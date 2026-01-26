@@ -8,16 +8,13 @@ import certifi
 
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="Vibe", layout="wide", page_icon="📚")
-# --- CUSTOM CSS (High Contrast: Black Buttons & Visible Text) ---
-# --- CUSTOM CSS (Forced Visibility for Button Text) ---
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 /* ============================= */
-/* 1. PAGE + GLOBAL TYPOGRAPHY   */
+/* PAGE & TYPOGRAPHY             */
 /* ============================= */
-
 .stApp {
     background-color: #F1F5F9 !important;
     font-family: 'Inter', sans-serif !important;
@@ -29,7 +26,7 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 700 !important;
 }
 
-/* General text (SCOPED – no buttons harmed) */
+/* General text (scoped; avoids touching button internals) */
 .stApp p,
 .stApp span,
 .stApp label {
@@ -37,9 +34,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ============================= */
-/* 2. INPUTS                     */
+/* INPUTS                        */
 /* ============================= */
-
 .stTextInput input {
     background-color: #FFFFFF !important;
     color: #000000 !important;
@@ -48,9 +44,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ============================= */
-/* 3. BUTTONS – BASE STYLE       */
+/* BUTTONS - BASE (background)   */
 /* ============================= */
-
 .stButton > button,
 button[kind="primary"],
 button[kind="secondary"],
@@ -63,28 +58,67 @@ div[data-testid="stPopover"] > button {
     border-radius: 8px !important;
     opacity: 1 !important;
     height: auto !important;
-
-    /* IMPORTANT: button text color */
-    color: #FFFFFF !important;
-    font-weight: 600 !important;
+    box-shadow: none !important;
 }
 
 /* ============================= */
-/* 4. BUTTON HOVER               */
+/* BUTTON TEXT & ICONS - FORCE WHITE FOR ALL DESCENDANTS */
+/* This reaches deeply nested labels, spans, divs, and svg paths */
 /* ============================= */
+.stButton > button,
+.stButton > button *,
+button[kind="primary"],
+button[kind="primary"] *,
+button[kind="secondary"],
+button[kind="secondary"] *,
+[data-testid="stBaseButton-secondary"],
+[data-testid="stBaseButton-secondary"] *,
+[data-testid="stBaseButton-popover"],
+[data-testid="stBaseButton-popover"] *,
+[data-testid="stBaseButton-headerNoPadding"],
+[data-testid="stBaseButton-headerNoPadding"] *,
+div[data-testid="stPopover"] > button,
+div[data-testid="stPopover"] > button * {
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important; /* for some browsers */
+    opacity: 1 !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+}
 
+/* Ensure SVG icons / paths also become white */
+.stButton > button svg,
+.stButton > button svg * ,
+[data-testid="stBaseButton-popover"] svg,
+[data-testid="stBaseButton-popover"] svg * {
+    fill: #FFFFFF !important;
+    stroke: #FFFFFF !important;
+}
+
+/* ============================= */
+/* HOVER STATE                   */
+/* ============================= */
 .stButton > button:hover,
 button[kind="primary"]:hover,
-button[kind="secondary"]:hover {
+button[kind="secondary"]:hover,
+[data-testid="stBaseButton-popover"]:hover {
     background-color: #1E293B !important;
     border-color: #1E293B !important;
+}
+
+/* Keep hover text white (descendants again) */
+.stButton > button:hover,
+.stButton > button:hover *,
+[data-testid="stBaseButton-popover"]:hover,
+[data-testid="stBaseButton-popover"]:hover * {
     color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+    opacity: 1 !important;
 }
 
 /* ============================= */
-/* 5. BOOK CARD                  */
+/* BOOK CARD                     */
 /* ============================= */
-
 .book-card {
     background-color: #FFFFFF !important;
     border: 1px solid #CBD5E1 !important;
@@ -94,16 +128,14 @@ button[kind="secondary"]:hover {
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
-/* ============================= */
-/* 6. REMOVE STREAMLIT FOCUS GLOW */
-/* ============================= */
-
+/* Remove browser focus glow if you want */
 button:focus {
     box-shadow: none !important;
     outline: none !important;
 }
 </style>
 """, unsafe_allow_html=True)
+
 
 
 # --- UPDATED SEARCH LOGIC (STRICT TITLE MATCH) ---
@@ -336,6 +368,7 @@ else:
 
 
                 st.markdown('</div>', unsafe_allow_html=True)
+
 
 
 
