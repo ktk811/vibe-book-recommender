@@ -8,136 +8,71 @@ import certifi
 
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="Vibe", layout="wide", page_icon="📚")
+# --- DEFINITIVE CSS (Solid Black Buttons & High-Contrast Text) ---
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    /* Global Page Visibility */
+    .stApp { background-color: #F1F5F9 !important; font-family: 'Inter', sans-serif; }
 
-/* ============================= */
-/* PAGE & TYPOGRAPHY             */
-/* ============================= */
-.stApp {
-    background-color: #F1F5F9 !important;
-    font-family: 'Inter', sans-serif !important;
-}
+    /* headings and body text visibility - The "Vibe" Visibility Fix */
+    h1, h2, h3, h4, h5, h6, label, [data-testid="stHeader"] { 
+        color: #0F172A !important; 
+        font-weight: 700 !important; 
+    }
+    p, span, div { color: #1E293B !important; }
 
-/* Headings */
-h1, h2, h3, h4, h5, h6 {
-    color: #0F172A !important;
-    font-weight: 700 !important;
-}
+    /* UNIVERSAL BLACK BUTTONS (Search, Sign Out, Read Info, etc.) */
+    .stButton > button, 
+    button[kind="primary"], 
+    button[kind="secondary"],
+    [data-testid="stBaseButton-secondary"],
+    [data-testid="stBaseButton-popover"],
+    [data-testid="stBaseButton-headerNoPadding"],
+    div[data-testid="stPopover"] > button {
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        border: 2px solid #000000 !important;
+        border-radius: 8px !important;
+        opacity: 1 !important;
+        height: 3rem !important;
+    }
 
-/* General text (scoped; avoids touching button internals) */
-.stApp p,
-.stApp span,
-.stApp label {
-    color: #1E293B;
-}
+    /* FORCED WHITE BUTTON TEXT - Target internal p, span, and label tags */
+    .stButton > button p, 
+    .stButton > button span, 
+    .stButton > button label,
+    [data-testid="stBaseButton-popover"] p,
+    div[data-testid="stPopover"] > button p,
+    div[data-testid="stPopover"] > button span {
+        color: #FFFFFF !important;
+        font-weight: 700 !important;
+        font-size: 1rem !important;
+    }
 
-/* ============================= */
-/* INPUTS                        */
-/* ============================= */
-.stTextInput input {
-    background-color: #FFFFFF !important;
-    color: #000000 !important;
-    border: 2px solid #CBD5E1 !important;
-    border-radius: 8px !important;
-}
+    /* Hover effect for all buttons */
+    .stButton > button:hover { 
+        background-color: #334155 !important; 
+        border-color: #334155 !important; 
+    }
+    .stButton > button:hover * { color: #FFFFFF !important; }
 
-/* ============================= */
-/* BUTTONS - BASE (background)   */
-/* ============================= */
-.stButton > button,
-button[kind="primary"],
-button[kind="secondary"],
-[data-testid="stBaseButton-secondary"],
-[data-testid="stBaseButton-popover"],
-[data-testid="stBaseButton-headerNoPadding"],
-div[data-testid="stPopover"] > button {
-    background-color: #000000 !important;
-    border: 2px solid #000000 !important;
-    border-radius: 8px !important;
-    opacity: 1 !important;
-    height: auto !important;
-    box-shadow: none !important;
-}
-
-/* ============================= */
-/* BUTTON TEXT & ICONS - FORCE WHITE FOR ALL DESCENDANTS */
-/* This reaches deeply nested labels, spans, divs, and svg paths */
-/* ============================= */
-.stButton > button,
-.stButton > button *,
-button[kind="primary"],
-button[kind="primary"] *,
-button[kind="secondary"],
-button[kind="secondary"] *,
-[data-testid="stBaseButton-secondary"],
-[data-testid="stBaseButton-secondary"] *,
-[data-testid="stBaseButton-popover"],
-[data-testid="stBaseButton-popover"] *,
-[data-testid="stBaseButton-headerNoPadding"],
-[data-testid="stBaseButton-headerNoPadding"] *,
-div[data-testid="stPopover"] > button,
-div[data-testid="stPopover"] > button * {
-    color: #FFFFFF !important;
-    -webkit-text-fill-color: #FFFFFF !important; /* for some browsers */
-    opacity: 1 !important;
-    font-weight: 600 !important;
-    text-decoration: none !important;
-}
-
-/* Ensure SVG icons / paths also become white */
-.stButton > button svg,
-.stButton > button svg * ,
-[data-testid="stBaseButton-popover"] svg,
-[data-testid="stBaseButton-popover"] svg * {
-    fill: #FFFFFF !important;
-    stroke: #FFFFFF !important;
-}
-
-/* ============================= */
-/* HOVER STATE                   */
-/* ============================= */
-.stButton > button:hover,
-button[kind="primary"]:hover,
-button[kind="secondary"]:hover,
-[data-testid="stBaseButton-popover"]:hover {
-    background-color: #1E293B !important;
-    border-color: #1E293B !important;
-}
-
-/* Keep hover text white (descendants again) */
-.stButton > button:hover,
-.stButton > button:hover *,
-[data-testid="stBaseButton-popover"]:hover,
-[data-testid="stBaseButton-popover"]:hover * {
-    color: #FFFFFF !important;
-    -webkit-text-fill-color: #FFFFFF !important;
-    opacity: 1 !important;
-}
-
-/* ============================= */
-/* BOOK CARD                     */
-/* ============================= */
-.book-card {
-    background-color: #FFFFFF !important;
-    border: 1px solid #CBD5E1 !important;
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 24px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-}
-
-/* Remove browser focus glow if you want */
-button:focus {
-    box-shadow: none !important;
-    outline: none !important;
-}
+    /* Book Card & Input Box styling */
+    .book-card { 
+        background-color: #FFFFFF !important; 
+        border: 1px solid #CBD5E1 !important; 
+        border-radius: 12px; 
+        padding: 24px; 
+        margin-bottom: 24px; 
+    }
+    .stTextInput input { 
+        background-color: #FFFFFF !important; 
+        color: #000000 !important; 
+        border: 2px solid #CBD5E1 !important; 
+    }
 </style>
 """, unsafe_allow_html=True)
-
-
-
 # --- UPDATED SEARCH LOGIC (STRICT TITLE MATCH) ---
 # Update this line inside your smart_search function:
 def smart_search(query, username=None, mood=50, complexity=50):
@@ -368,6 +303,7 @@ else:
 
 
                 st.markdown('</div>', unsafe_allow_html=True)
+
 
 
 
