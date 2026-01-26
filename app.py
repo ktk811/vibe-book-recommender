@@ -33,7 +33,7 @@ st.markdown("""
     [data-testid="stSidebar"] h3 {
         color: #0F172A !important;
     }
-    /* UNIVERSAL BLACK BUTTONS (Search, Sign Out, Read Info, etc.) */
+    /* UNIVERSAL WHITE BUTTONS (Search, Sign Out, Read Info, etc.) */
     div.stButton > button:first-child,
     button[kind="primary"],
     button[kind="secondary"],
@@ -41,64 +41,64 @@ st.markdown("""
     [data-testid="stBaseButton-popover"],
     [data-testid="stBaseButton-headerNoPadding"],
     div[data-testid="stPopover"] > button {
-        background-color: #000000 !important;
-        color: #FFFFFF !important;
+        background-color: #FFFFFF !important;
+        color: #000000 !important;
         border: 2px solid #000000 !important;
         border-radius: 8px !important;
         opacity: 1 !important;
         height: 3rem !important;
     }
-    /* TARGET BLACK BACKGROUND BUTTONS WITH WHITE TEXT */
+    /* TARGET WHITE BACKGROUND BUTTONS WITH BLACK TEXT */
     div.stButton > button:first-child,
     [data-testid="stBaseButton"] button {
-        color: #FFFFFF !important;
+        color: #000000 !important;
     }
    
     div.stButton > button:first-child *,
     [data-testid="stBaseButton"] button * {
-        color: #FFFFFF !important;
+        color: #000000 !important;
     }
    
     /* Collapse sidebar button */
     button[aria-label="Collapse sidebar"] {
-        color: #FFFFFF !important;
-        background-color: #000000 !important;
+        color: #000000 !important;
+        background-color: #FFFFFF !important;
     }
     button[aria-label="Collapse sidebar"] * {
-        color: #FFFFFF !important;
+        color: #000000 !important;
     }
    
     /* Icon buttons and popover buttons */
     [data-testid="stBaseButton-secondary"] {
-        color: #FFFFFF !important;
+        color: #000000 !important;
     }
     [data-testid="stBaseButton-secondary"] * {
-        color: #FFFFFF !important;
+        color: #000000 !important;
     }
    
-    /* SIDEBAR BUTTON TEXT - Ensure white text on black buttons in sidebar */
+    /* SIDEBAR BUTTON TEXT - Ensure black text on white buttons in sidebar */
     [data-testid="stSidebar"] div.stButton > button:first-child,
     [data-testid="stSidebar"] button[kind="primary"],
     [data-testid="stSidebar"] button[kind="secondary"] {
-        color: #FFFFFF !important;
+        color: #000000 !important;
     }
     [data-testid="stSidebar"] div.stButton > button:first-child p,
     [data-testid="stSidebar"] div.stButton > button:first-child span,
     [data-testid="stSidebar"] div.stButton > button:first-child div {
-        color: #FFFFFF !important;
+        color: #000000 !important;
     }
     /* Hover effect for all buttons */
     div.stButton > button:first-child:hover {
-        background-color: #334155 !important;
+        background-color: #F1F5F9 !important;
         border-color: #334155 !important;
     }
-    div.stButton > button:first-child:hover * { color: #FFFFFF !important; }
+    div.stButton > button:first-child:hover * { color: #000000 !important; }
     /* Add for icons/symbols */
     div.stButton > button:first-child svg,
     div.stButton > button:first-child path,
     div.stButton > button:first-child i {
-        fill: #FFFFFF !important;
-        color: #FFFFFF !important;
+        fill: #000000 !important;
+        color: #000000 !important;
     }
     /* Book Card & Input Box styling */
     .book-card {
@@ -428,6 +428,7 @@ else:
 
 
                 st.markdown('</div>', unsafe_allow_html=True)
+
 
 
 
