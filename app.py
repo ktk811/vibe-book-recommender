@@ -11,34 +11,31 @@ st.set_page_config(page_title="Vibe", layout="wide", page_icon="📚")
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    
+   
     /* Global Page Visibility */
     .stApp { background-color: #F1F5F9 !important; font-family: 'Inter', sans-serif; }
-
     /* LIGHT BACKGROUND FOR SIDEBAR */
     [data-testid="stSidebar"] { background-color: #F1F5F9 !important; }
     [data-testid="stSidebar"] [data-testid="stVerticalBlock"] { background-color: #F1F5F9 !important; }
-
     /* headings and body text visibility - The "Vibe" Visibility Fix */
-    h1, h2, h3, h4, h5, h6, label, [data-testid="stHeader"] { 
-        color: #0F172A !important; 
-        font-weight: 700 !important; 
+    h1, h2, h3, h4, h5, h6, label, [data-testid="stHeader"] {
+        color: #0F172A !important;
+        font-weight: 700 !important;
     }
     p, span, div { color: #1E293B !important; }
-    
+   
     /* SIDEBAR TEXT VISIBILITY */
     [data-testid="stSidebar"] p,
     [data-testid="stSidebar"] span,
     [data-testid="stSidebar"] label,
     [data-testid="stSidebar"] h1,
     [data-testid="stSidebar"] h2,
-    [data-testid="stSidebar"] h3 { 
-        color: #0F172A !important; 
+    [data-testid="stSidebar"] h3 {
+        color: #0F172A !important;
     }
-
     /* UNIVERSAL BLACK BUTTONS (Search, Sign Out, Read Info, etc.) */
-    .stButton > button, 
-    button[kind="primary"], 
+    div.stButton > button:first-child,
+    button[kind="primary"],
     button[kind="secondary"],
     [data-testid="stBaseButton-secondary"],
     [data-testid="stBaseButton-popover"],
@@ -51,18 +48,17 @@ st.markdown("""
         opacity: 1 !important;
         height: 3rem !important;
     }
-
     /* TARGET BLACK BACKGROUND BUTTONS WITH WHITE TEXT */
-    .stButton button,
+    div.stButton > button:first-child,
     [data-testid="stBaseButton"] button {
         color: #FFFFFF !important;
     }
-    
-    .stButton button *,
+   
+    div.stButton > button:first-child *,
     [data-testid="stBaseButton"] button * {
         color: #FFFFFF !important;
     }
-    
+   
     /* Collapse sidebar button */
     button[aria-label="Collapse sidebar"] {
         color: #FFFFFF !important;
@@ -71,7 +67,7 @@ st.markdown("""
     button[aria-label="Collapse sidebar"] * {
         color: #FFFFFF !important;
     }
-    
+   
     /* Icon buttons and popover buttons */
     [data-testid="stBaseButton-secondary"] {
         color: #FFFFFF !important;
@@ -79,56 +75,142 @@ st.markdown("""
     [data-testid="stBaseButton-secondary"] * {
         color: #FFFFFF !important;
     }
-    
+   
     /* SIDEBAR BUTTON TEXT - Ensure white text on black buttons in sidebar */
-    [data-testid="stSidebar"] .stButton > button,
+    [data-testid="stSidebar"] div.stButton > button:first-child,
     [data-testid="stSidebar"] button[kind="primary"],
     [data-testid="stSidebar"] button[kind="secondary"] {
         color: #FFFFFF !important;
     }
-    [data-testid="stSidebar"] .stButton > button p,
-    [data-testid="stSidebar"] .stButton > button span,
-    [data-testid="stSidebar"] .stButton > button div {
+    [data-testid="stSidebar"] div.stButton > button:first-child p,
+    [data-testid="stSidebar"] div.stButton > button:first-child span,
+    [data-testid="stSidebar"] div.stButton > button:first-child div {
         color: #FFFFFF !important;
     }
-
     /* Hover effect for all buttons */
-    .stButton > button:hover { 
-        background-color: #334155 !important; 
-        border-color: #334155 !important; 
+    div.stButton > button:first-child:hover {
+        background-color: #334155 !important;
+        border-color: #334155 !important;
     }
-    .stButton > button:hover * { color: #FFFFFF !important; }
-
+    div.stButton > button:first-child:hover * { color: #FFFFFF !important; }
+    /* Add for icons/symbols */
+    div.stButton > button:first-child svg,
+    div.stButton > button:first-child path,
+    div.stButton > button:first-child i {
+        fill: #FFFFFF !important;
+        color: #FFFFFF !important;
+    }
     /* Book Card & Input Box styling */
-    .book-card { 
-        background-color: #FFFFFF !important; 
-        border: 1px solid #CBD5E1 !important; 
-        border-radius: 12px; 
-        padding: 24px; 
-        margin-bottom: 24px; 
+    .book-card {
+        background-color: #FFFFFF !important;
+        border: 1px solid #CBD5E1 !important;
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 24px;
     }
-    .stTextInput input { 
-        background-color: #FFFFFF !important; 
-        color: #000000 !important; 
-        border: 2px solid #CBD5E1 !important; 
+    .stTextInput input {
+        background-color: #FFFFFF !important;
+        color: #000000 !important;
+        border: 2px solid #CBD5E1 !important;
     }
 </style>
 """, unsafe_allow_html=True)
-
 
 # --- UPDATED SEARCH LOGIC (STRICT TITLE MATCH) ---
 # Update this line inside your smart_search function:
 def smart_search(query, username=None, mood=50, complexity=50):
     db = get_db()
     
-    # Use ^ and $ to match EXACT title only (Case-insensitive)
-    # This ensures "Malice" matches "Malice", not "Without MAlice"
+    # --- STEP 1: EXACT TITLE MATCH (Highest Priority) ---
+    # Using ^ and $ ensures "Malice" matches exactly "Malice" 
+    # and isn't pushed down by "Without MAlice"
     exact_matches = list(db.books_collection.find(
         {"title": {"$regex": f"^{query}$", "$options": "i"}},
         {"_id": 0, "title": 1, "description": 1, "ratings_count": 1, "avg_rating": 1, "url": 1, "image_url": 1}
-    ).limit(3))
+    ).limit(1))
     
-    # ... (Rest of the function stays the same)
+    # Give exact hits an artificial high score to lock them at the top
+    for book in exact_matches:
+        book['final_score'] = 2.0 
+
+    # --- STEP 2: VIBE SEARCH (Vector Retrieval) ---
+    # Constructing vibe context from the sidebar sliders
+    vibe_context = ""
+    if mood < 30: vibe_context += " lighthearted funny cheerful happy"
+    elif mood > 70: vibe_context += " dark serious grim intense"
+    
+    if complexity < 30: vibe_context += " simple easy read short"
+    elif complexity > 70: vibe_context += " complex philosophical academic difficult"
+    
+    final_query = query + vibe_context
+    query_vec = model.encode(final_query)
+    
+    # Apply Personalization if user is logged in
+    if username:
+        saved = list(db.library.find({"username": username}))
+        if saved:
+            titles = [b['title'] for b in saved]
+            history = list(db.books_collection.find({"title": {"$in": titles}}, {"embedding": 1}))
+            if history:
+                user_vec = np.mean([d['embedding'] for d in history], axis=0)
+                query_vec = (query_vec * 0.85) + (user_vec * 0.15)
+
+    # MongoDB Atlas Vector Search Pipeline
+    pipeline = [
+        {
+            "$vectorSearch": {
+                "index": "default", 
+                "path": "embedding", 
+                "queryVector": query_vec.tolist(), 
+                "numCandidates": 100, 
+                "limit": 40
+            }
+        },
+        {
+            "$project": {
+                "_id": 0, 
+                "title": 1, 
+                "description": 1, 
+                "ratings_count": 1, 
+                "avg_rating": 1, 
+                "url": 1, 
+                "image_url": 1,
+                "score": {"$meta": "vectorSearchScore"}
+            }
+        }
+    ]
+    vibe_candidates = list(db.books_collection.aggregate(pipeline))
+
+    # --- STEP 3: HYBRID SCORING (70% Vibe / 30% Popularity) ---
+    for doc in vibe_candidates:
+        relevance = doc.get('score', 0)
+        
+        # Log-based popularity score normalized 0.0 to 1.0
+        count = doc.get('ratings_count', 0) or 0
+        rating = doc.get('avg_rating', 0) or 0
+        pop_score = min((np.log1p(count) * rating) / 50.0, 1.0)
+        
+        # Weighted Final Score
+        doc['final_score'] = (relevance * 0.70) + (pop_score * 0.30)
+
+    # --- STEP 4: DEDUPLICATE AND MERGE ---
+    seen_titles = set()
+    final_results = []
+    
+    # 1. Add Exact Title Match first
+    for book in exact_matches:
+        if book['title'] not in seen_titles:
+            final_results.append(book)
+            seen_titles.add(book['title'])
+            
+    # 2. Add vibe results sorted by the hybrid score
+    vibe_candidates.sort(key=lambda x: x['final_score'], reverse=True)
+    for book in vibe_candidates:
+        if book['title'] not in seen_titles:
+            final_results.append(book)
+            seen_titles.add(book['title'])
+
+    return final_results
 # --- DATABASE ---
 @st.cache_resource
 def init_connection():
@@ -346,6 +428,7 @@ else:
 
 
                 st.markdown('</div>', unsafe_allow_html=True)
+
 
 
 
