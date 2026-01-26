@@ -14,35 +14,90 @@ st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     
-    .stApp { background-color: #F1F5F9; font-family: 'Inter', sans-serif; color: #0F172A; }
-    [data-testid="stSidebar"] { background-color: #E2E8F0; border-right: 1px solid #CBD5E1; }
+    /* Global Background & Text */
+    .stApp { 
+        background-color: #F1F5F9 !important; 
+        font-family: 'Inter', sans-serif; 
+        color: #0F172A !important; 
+    }
     
+    /* Sidebar Fix */
+    [data-testid="stSidebar"] { 
+        background-color: #E2E8F0 !important; 
+        border-right: 1px solid #CBD5E1 !important; 
+    }
+    
+    /* Book Card Container */
     .book-card {
-        background-color: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px;
-        padding: 24px; margin-bottom: 24px;
+        background-color: #FFFFFF !important; 
+        border: 1px solid #E2E8F0 !important; 
+        border-radius: 12px;
+        padding: 24px; 
+        margin-bottom: 24px;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        transition: transform 0.2s ease-in-out;
+        transition: all 0.2s ease-in-out;
     }
     .book-card:hover { 
-        transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); border-color: #6366F1; 
+        transform: translateY(-4px); 
+        box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.1); 
+        border-color: #6366F1 !important; 
     }
     
+    /* Typography Visibility */
     h1, h2, h3 { color: #1E293B !important; font-weight: 700 !important; }
-    p, span, div { color: #475569; }
-    
+    p, span, div, label { color: #334155 !important; }
+    .stMarkdown p { color: #475569 !important; }
+
+    /* PRIMARY BUTTON (Search/Login) - Force White Text */
     div.stButton > button[kind="primary"] { 
-        background-color: #4338CA !important; border: none !important; border-radius: 6px !important; 
-        height: 2.8rem; font-weight: 600 !important; font-size: 1rem !important; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        background-color: #4338CA !important; 
+        color: #FFFFFF !important; 
+        border: none !important; 
+        border-radius: 8px !important; 
+        height: 3rem; 
+        font-weight: 600 !important; 
+        width: 100%;
+        box-shadow: 0 4px 6px rgba(67, 56, 202, 0.2) !important;
     }
-    div.stButton > button[kind="primary"], div.stButton > button[kind="primary"] * { color: #FFFFFF !important; }
-    div.stButton > button[kind="primary"]:hover { background-color: #3730A3 !important; }
-    
+    div.stButton > button[kind="primary"]:hover { 
+        background-color: #3730A3 !important; 
+        color: #FFFFFF !important; 
+    }
+
+    /* SECONDARY BUTTONS (Read/PDF/Save) - Fix Blackout */
     div.stButton > button[kind="secondary"] { 
-        background-color: #FFFFFF !important; color: #334155 !important; border: 1px solid #CBD5E1 !important; border-radius: 6px !important;
+        background-color: #FFFFFF !important; 
+        color: #1E293B !important; 
+        border: 1px solid #CBD5E1 !important; 
+        border-radius: 8px !important;
+        font-weight: 500 !important;
+        width: 100%;
     }
-    div.stButton > button[kind="secondary"]:hover { border-color: #4338CA !important; color: #4338CA !important; background-color: #EEF2FF !important; }
+    div.stButton > button[kind="secondary"]:hover { 
+        border-color: #4338CA !important; 
+        color: #4338CA !important; 
+        background-color: #F8FAFC !important; 
+    }
+
+    /* RATE POPOVER UI FIX */
+    button[data-testid="baseButton-headerNoPadding"] {
+        background-color: #F1F5F9 !important;
+        border: 1px solid #CBD5E1 !important;
+        color: #1E293B !important;
+    }
+
+    /* Input Field Fix */
+    .stTextInput input { 
+        background-color: #FFFFFF !important; 
+        border: 1px solid #CBD5E1 !important; 
+        border-radius: 8px; 
+        color: #0F172A !important; 
+    }
     
-    .stTextInput input { background-color: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 6px; color: #0F172A; }
+    /* Slider Label Visibility */
+    .stSlider [data-testid="stTickBarMin"], .stSlider [data-testid="stTickBarMax"] {
+        color: #64748B !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -260,5 +315,6 @@ else:
                         if st.button("Submit", key=f"btn_{idx}_{book['title']}", type="primary"):
                             submit_rating(book['title'], user_score)
                             st.toast("Rated!")
+
 
                 st.markdown('</div>', unsafe_allow_html=True)
