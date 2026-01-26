@@ -9,7 +9,7 @@ import certifi
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="Vibe", layout="wide", page_icon="📚")
 
-# --- CUSTOM CSS ---
+# --- CUSTOM CSS (Aggressive Override for Button Visibility) ---
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -20,7 +20,7 @@ st.markdown("""
         font-family: 'Inter', sans-serif; 
     }
     
-    /* Sidebar Fix */
+    /* Sidebar Styling */
     [data-testid="stSidebar"] { 
         background-color: #E2E8F0 !important; 
     }
@@ -35,10 +35,6 @@ st.markdown("""
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     }
     
-    /* Typography Visibility */
-    h1, h2, h3 { color: #1E293B !important; }
-    p, span, label { color: #334155 !important; }
-
     /* 1. PRIMARY BUTTON (SEARCH) - Force White Text */
     div.stButton > button[kind="primary"] { 
         background-color: #4338CA !important; 
@@ -48,52 +44,71 @@ st.markdown("""
         width: 100%;
     }
     
-    /* This targets the text inside the primary button specifically */
-    div.stButton > button[kind="primary"] p {
-        color: white !important;
+    /* Force text white inside primary button */
+    div.stButton > button[kind="primary"] p,
+    div.stButton > button[kind="primary"] span {
+        color: #FFFFFF !important;
         font-weight: 600 !important;
     }
 
-    /* 2. SECONDARY BUTTONS (READ/PDF/SAVE) - Fix Blackout */
-    div.stButton > button[kind="secondary"] { 
-        background-color: #F8FAFC !important; /* Very light grey, almost white */
+    /* 2. SECONDARY BUTTONS (READ/PDF/SAVE) - Aggressive White Background */
+    /* We target the base button class and the secondary kind */
+    div.stButton > button[kind="secondary"], 
+    div[data-testid="stPopover"] > button { 
+        background-color: #FFFFFF !important; 
         color: #1E293B !important; 
         border: 1px solid #CBD5E1 !important; 
         border-radius: 8px !important;
         width: 100%;
+        opacity: 1 !important; /* Prevents dimmed look */
     }
 
-    /* Force text color for secondary buttons */
-    div.stButton > button[kind="secondary"] p {
+    /* Targeting the internal text tag specifically */
+    div.stButton > button[kind="secondary"] p,
+    div.stButton > button[kind="secondary"] span,
+    div[data-testid="stPopover"] > button p {
         color: #1E293B !important;
+        font-weight: 500 !important;
     }
 
-    /* Hover State for Secondary Buttons */
-    div.stButton > button[kind="secondary"]:hover { 
+    /* Hover State for Secondary/Popover Buttons */
+    div.stButton > button[kind="secondary"]:hover,
+    div[data-testid="stPopover"] > button:hover { 
         border-color: #4338CA !important; 
-        color: #4338CA !important;
-        background-color: #FFFFFF !important;
+        background-color: #F8FAFC !important;
     }
     
-    div.stButton > button[kind="secondary"]:hover p {
+    div.stButton > button[kind="secondary"]:hover p,
+    div.stButton > button[kind="secondary"]:hover span {
         color: #4338CA !important;
     }
 
-    /* 3. INPUT FIELD FIX */
+    /* 3. INPUT FIELD TEXT FIX */
     .stTextInput input { 
         background-color: #FFFFFF !important; 
         color: #0F172A !important; 
         border: 1px solid #CBD5E1 !important;
     }
-
-    /* 4. POPOVER (RATE) FIX */
-    div[data-testid="stPopover"] > button {
-        background-color: #F8FAFC !important;
-        color: #1E293B !important;
-        border: 1px solid #CBD5E1 !important;
-    }
+    
+    /* Typography Visibility */
+    h1, h2, h3 { color: #1E293B !important; }
+    p, span, label { color: #334155 !important; }
 </style>
 """, unsafe_allow_html=True)
+
+# --- UPDATED SEARCH LOGIC (STRICT TITLE MATCH) ---
+# Update this line inside your smart_search function:
+def smart_search(query, username=None, mood=50, complexity=50):
+    db = get_db()
+    
+    # Use ^ and $ to match EXACT title only (Case-insensitive)
+    # This ensures "Malice" matches "Malice", not "Without MAlice"
+    exact_matches = list(db.books_collection.find(
+        {"title": {"$regex": f"^{query}$", "$options": "i"}},
+        {"_id": 0, "title": 1, "description": 1, "ratings_count": 1, "avg_rating": 1, "url": 1, "image_url": 1}
+    ).limit(3))
+    
+    # ... (Rest of the function stays the same)
 # --- DATABASE ---
 @st.cache_resource
 def init_connection():
@@ -311,4 +326,5 @@ else:
 
 
                 st.markdown('</div>', unsafe_allow_html=True)
+
 
