@@ -52,27 +52,32 @@ st.markdown("""
         height: 3rem !important;
     }
 
-    /* FORCED WHITE BUTTON TEXT - Target ALL internal text elements */
-    .stButton > button p, 
-    .stButton > button span, 
-    .stButton > button label,
-    .stButton > button div,
-    .stButton > button *,
-    button p, 
-    button span, 
-    button label,
-    button div,
-    button *,
-    [data-testid="stBaseButton-popover"] p,
-    [data-testid="stBaseButton-popover"] span,
-    [data-testid="stBaseButton-popover"] div,
-    [data-testid="stBaseButton-popover"] *,
-    div[data-testid="stPopover"] > button p,
-    div[data-testid="stPopover"] > button span,
-    div[data-testid="stPopover"] > button div,
-    div[data-testid="stPopover"] > button * {
+    /* TARGET BLACK BACKGROUND BUTTONS WITH WHITE TEXT */
+    .stButton button,
+    [data-testid="stBaseButton"] button {
         color: #FFFFFF !important;
-        font-weight: 600 !important;
+    }
+    
+    .stButton button *,
+    [data-testid="stBaseButton"] button * {
+        color: #FFFFFF !important;
+    }
+    
+    /* Collapse sidebar button */
+    button[aria-label="Collapse sidebar"] {
+        color: #FFFFFF !important;
+        background-color: #000000 !important;
+    }
+    button[aria-label="Collapse sidebar"] * {
+        color: #FFFFFF !important;
+    }
+    
+    /* Icon buttons and popover buttons */
+    [data-testid="stBaseButton-secondary"] {
+        color: #FFFFFF !important;
+    }
+    [data-testid="stBaseButton-secondary"] * {
+        color: #FFFFFF !important;
     }
     
     /* SIDEBAR BUTTON TEXT - Ensure white text on black buttons in sidebar */
@@ -109,6 +114,7 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
+
 
 # --- UPDATED SEARCH LOGIC (STRICT TITLE MATCH) ---
 # Update this line inside your smart_search function:
@@ -340,6 +346,7 @@ else:
 
 
                 st.markdown('</div>', unsafe_allow_html=True)
+
 
 
 
