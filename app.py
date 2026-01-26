@@ -8,68 +8,84 @@ import certifi
 
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="Vibe", layout="wide", page_icon="📚")
-
-# --- CUSTOM CSS (Forced Black Buttons with White Text) ---
+# --- CUSTOM CSS (High Contrast: Black Buttons & Visible Text) ---
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     
-    /* Global Background */
-    .stApp { background-color: #F1F5F9 !important; font-family: 'Inter', sans-serif; }
-    [data-testid="stSidebar"] { background-color: #E2E8F0 !important; }
-
-    /* 1. PRIMARY BUTTON (SEARCH/LOGIN) - Stay Indigo but ensure White Text */
-    div.stButton > button[kind="primary"] {
-        background-color: #4338CA !important;
-        border: none !important;
-        color: white !important;
+    /* 1. Page & Sidebar Background */
+    .stApp { 
+        background-color: #F1F5F9 !important; 
+        font-family: 'Inter', sans-serif; 
     }
-    div.stButton > button[kind="primary"] * { color: white !important; font-weight: 700 !important; }
+    [data-testid="stSidebar"] { 
+        background-color: #E2E8F0 !important; 
+    }
+    
+    /* 2. TEXT VISIBILITY - Forces all headings and text to be dark/visible */
+    h1, h2, h3, h4, h5, h6 { 
+        color: #0F172A !important; 
+        font-weight: 700 !important; 
+    }
+    p, span, label, div { 
+        color: #1E293B !important; 
+    }
+    /* Specifically target book descriptions */
+    .stMarkdown p { 
+        color: #334155 !important; 
+    }
 
-    /* 2. ALL OTHER BUTTONS (READ, PDF, SAVE, RATE, SIGN OUT) - Forced Black */
+    /* 3. BUTTONS - ALL PURE BLACK WITH WHITE TEXT */
+    /* Targets every possible Streamlit button type */
     .stButton > button, 
+    button[kind="primary"], 
+    button[kind="secondary"],
     [data-testid="stBaseButton-secondary"],
     [data-testid="stBaseButton-popover"],
-    button[data-testid="baseButton-headerNoPadding"],
+    [data-testid="stBaseButton-headerNoPadding"],
     div[data-testid="stPopover"] > button {
         background-color: #000000 !important;
         color: #FFFFFF !important;
-        border: 1px solid #000000 !important;
+        border: 2px solid #000000 !important;
         border-radius: 8px !important;
         opacity: 1 !important;
     }
 
-    /* Target internal text/spans for all secondary buttons to force White */
+    /* Force the actual text/labels inside the buttons to be White */
     .stButton > button p, 
     .stButton > button span,
-    [data-testid="stBaseButton-secondary"] p,
+    button[kind="primary"] p,
+    button[kind="primary"] span,
     [data-testid="stBaseButton-popover"] p,
     div[data-testid="stPopover"] > button p {
         color: #FFFFFF !important;
         font-weight: 600 !important;
     }
 
-    /* Hover State - Turn slightly grey so user knows they clicked */
-    .stButton > button:hover, div[data-testid="stPopover"] > button:hover {
-        background-color: #333333 !important;
-        border-color: #333333 !important;
+    /* Hover effect - Dark Grey */
+    .stButton > button:hover {
+        background-color: #1E293B !important;
+        border-color: #1E293B !important;
+    }
+    .stButton > button:hover p, .stButton > button:hover span {
+        color: #FFFFFF !important;
     }
 
-    /* 3. INPUT FIELD */
-    .stTextInput input {
-        background-color: #FFFFFF !important;
-        color: #000000 !important;
-        border: 1px solid #CBD5E1 !important;
-    }
-
-    /* 4. BOOK CARD Styling */
+    /* 4. BOOK CARD - White background with border */
     .book-card {
         background-color: #FFFFFF !important;
-        border: 1px solid #E2E8F0 !important;
+        border: 1px solid #CBD5E1 !important;
         border-radius: 12px;
         padding: 24px;
         margin-bottom: 24px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    /* 5. INPUT FIELD - Solid border and black text */
+    .stTextInput input {
+        background-color: #FFFFFF !important;
+        color: #000000 !important;
+        border: 2px solid #CBD5E1 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -304,6 +320,7 @@ else:
 
 
                 st.markdown('</div>', unsafe_allow_html=True)
+
 
 
 
