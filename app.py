@@ -12,79 +12,99 @@ st.set_page_config(page_title="Vibe", layout="wide", page_icon="📚")
 # --- CUSTOM CSS (Forced Visibility for Button Text) ---
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    
-    /* 1. Page Background & Global Text */
-    .stApp { 
-        background-color: #F1F5F9 !important; 
-        font-family: 'Inter', sans-serif; 
-    }
-    h1, h2, h3, h4, h5, h6 { 
-        color: #0F172A !important; 
-        font-weight: 700 !important; 
-    }
-    /* This ensures all general text is dark and visible */
-    p, span, label, div { 
-        color: #1E293B !important; 
-    }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-    /* 2. BUTTONS - UNIVERSAL BLACK BACKGROUND */
-    .stButton > button, 
-    button[kind="primary"], 
-    button[kind="secondary"],
-    [data-testid="stBaseButton-secondary"],
-    [data-testid="stBaseButton-popover"],
-    [data-testid="stBaseButton-headerNoPadding"],
-    div[data-testid="stPopover"] > button {
-        background-color: #000000 !important;
-        border: 2px solid #000000 !important;
-        border-radius: 8px !important;
-        opacity: 1 !important;
-        height: auto !important;
-    }
+/* ============================= */
+/* 1. PAGE + GLOBAL TYPOGRAPHY   */
+/* ============================= */
 
-    /* 3. BUTTON TEXT - THE FIX */
-    /* Target every possible text container inside buttons to force them to White */
-    .stButton > button p, 
-    .stButton > button span, 
-    .stButton > button label,
-    [data-testid="stBaseButton-secondary"] p,
-    [data-testid="stBaseButton-secondary"] span,
-    [data-testid="stBaseButton-popover"] p,
-    div[data-testid="stPopover"] > button p,
-    div[data-testid="stPopover"] > button span {
-        color: #FFFFFF !important;
-        font-weight: 600 !important;
-        text-decoration: none !important;
-    }
+.stApp {
+    background-color: #F1F5F9 !important;
+    font-family: 'Inter', sans-serif !important;
+}
 
-    /* 4. HOVER STATE - Keep text white while changing background to dark grey */
-    .stButton > button:hover {
-        background-color: #1E293B !important;
-        border-color: #1E293B !important;
-    }
-    .stButton > button:hover p, 
-    .stButton > button:hover span, 
-    .stButton > button:hover label {
-        color: #FFFFFF !important;
-    }
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    color: #0F172A !important;
+    font-weight: 700 !important;
+}
 
-    /* 5. BOOK CARD & INPUTS */
-    .book-card {
-        background-color: #FFFFFF !important;
-        border: 1px solid #CBD5E1 !important;
-        border-radius: 12px;
-        padding: 24px;
-        margin-bottom: 24px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    }
-    .stTextInput input {
-        background-color: #FFFFFF !important;
-        color: #000000 !important;
-        border: 2px solid #CBD5E1 !important;
-    }
+/* General text (SCOPED – no buttons harmed) */
+.stApp p,
+.stApp span,
+.stApp label {
+    color: #1E293B;
+}
+
+/* ============================= */
+/* 2. INPUTS                     */
+/* ============================= */
+
+.stTextInput input {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+    border: 2px solid #CBD5E1 !important;
+    border-radius: 8px !important;
+}
+
+/* ============================= */
+/* 3. BUTTONS – BASE STYLE       */
+/* ============================= */
+
+.stButton > button,
+button[kind="primary"],
+button[kind="secondary"],
+[data-testid="stBaseButton-secondary"],
+[data-testid="stBaseButton-popover"],
+[data-testid="stBaseButton-headerNoPadding"],
+div[data-testid="stPopover"] > button {
+    background-color: #000000 !important;
+    border: 2px solid #000000 !important;
+    border-radius: 8px !important;
+    opacity: 1 !important;
+    height: auto !important;
+
+    /* IMPORTANT: button text color */
+    color: #FFFFFF !important;
+    font-weight: 600 !important;
+}
+
+/* ============================= */
+/* 4. BUTTON HOVER               */
+/* ============================= */
+
+.stButton > button:hover,
+button[kind="primary"]:hover,
+button[kind="secondary"]:hover {
+    background-color: #1E293B !important;
+    border-color: #1E293B !important;
+    color: #FFFFFF !important;
+}
+
+/* ============================= */
+/* 5. BOOK CARD                  */
+/* ============================= */
+
+.book-card {
+    background-color: #FFFFFF !important;
+    border: 1px solid #CBD5E1 !important;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* ============================= */
+/* 6. REMOVE STREAMLIT FOCUS GLOW */
+/* ============================= */
+
+button:focus {
+    box-shadow: none !important;
+    outline: none !important;
+}
 </style>
 """, unsafe_allow_html=True)
+
 
 # --- UPDATED SEARCH LOGIC (STRICT TITLE MATCH) ---
 # Update this line inside your smart_search function:
@@ -316,6 +336,7 @@ else:
 
 
                 st.markdown('</div>', unsafe_allow_html=True)
+
 
 
 
