@@ -40,7 +40,8 @@ st.markdown("""
     [data-testid="stBaseButton-secondary"],
     [data-testid="stBaseButton-popover"],
     [data-testid="stBaseButton-headerNoPadding"],
-    div[data-testid="stPopover"] > button {
+    div[data-testid="stPopover"] > button,
+    button {
         background-color: #FFFFFF !important;
         color: #000000 !important;
         border: 2px solid #000000 !important;
@@ -50,12 +51,14 @@ st.markdown("""
     }
     /* TARGET WHITE BACKGROUND BUTTONS WITH BLACK TEXT */
     div.stButton > button:first-child,
-    [data-testid="stBaseButton"] button {
+    [data-testid="stBaseButton"] button,
+    button {
         color: #000000 !important;
     }
    
     div.stButton > button:first-child *,
-    [data-testid="stBaseButton"] button * {
+    [data-testid="stBaseButton"] button *,
+    button * {
         color: #000000 !important;
     }
    
@@ -88,15 +91,20 @@ st.markdown("""
         color: #000000 !important;
     }
     /* Hover effect for all buttons */
-    div.stButton > button:first-child:hover {
+    div.stButton > button:first-child:hover,
+    button:hover {
         background-color: #F1F5F9 !important;
         border-color: #334155 !important;
     }
-    div.stButton > button:first-child:hover * { color: #000000 !important; }
+    div.stButton > button:first-child:hover *,
+    button:hover * { color: #000000 !important; }
     /* Add for icons/symbols */
     div.stButton > button:first-child svg,
     div.stButton > button:first-child path,
-    div.stButton > button:first-child i {
+    div.stButton > button:first-child i,
+    button svg,
+    button path,
+    button i {
         fill: #000000 !important;
         color: #000000 !important;
     }
@@ -428,6 +436,7 @@ else:
 
 
                 st.markdown('</div>', unsafe_allow_html=True)
+
 
 
 
