@@ -1,0 +1,11 @@
+# Ignore virtual environments
+venv/
+env/
+.env
+
+# Ignore compiled python files
+__pycache__/
+*.pyc
+
+# Ignore Streamlit secrets (CRITICAL)
+.streamlit/secrets.toml
