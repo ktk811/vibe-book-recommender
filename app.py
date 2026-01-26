@@ -9,85 +9,97 @@ import certifi
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="Vibe", layout="wide", page_icon="📚")
 
-# --- CUSTOM CSS (Brute Force Fix) ---
+# --- CUSTOM CSS (PIXEL-PERFECT ALIGNMENT) ---
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     
-    /* 1. Global App Background */
+    /* 1. Global Reset */
     .stApp { 
         background-color: #F1F5F9 !important; 
         font-family: 'Inter', sans-serif; 
         color: #0F172A !important; 
     }
     
-    /* 2. Sidebar & Toggle Fix */
+    /* 2. Sidebar & Toggle Button Fix */
     [data-testid="stSidebar"] { 
         background-color: #E2E8F0 !important; 
         border-right: 1px solid #CBD5E1 !important; 
     }
-    /* Fix the invisible collapse arrow */
+    /* Forces the collapse arrow to be visible (Dark Slate) */
     [data-testid="stSidebarCollapsedControl"] {
         color: #0F172A !important;
         background-color: transparent !important;
     }
     
-    /* 3. Text Visibility */
-    h1, h2, h3, h4, h5, h6, [data-testid="stHeader"] { color: #0F172A !important; font-weight: 700 !important; }
-    p, span, div, label { color: #334155 !important; }
+    /* 3. Text Visibility Assurance */
+    h1, h2, h3, h4, h5, h6, [data-testid="stHeader"] { 
+        color: #0F172A !important; 
+        font-weight: 700 !important; 
+    }
+    p, span, div, label, li { 
+        color: #334155 !important; 
+    }
 
-    /* 4. UNIFIED BUTTONS (The Strict Pixel Fix) */
-    /* Target ALL buttons: Link buttons, Regular buttons, Secondary buttons */
+    /* 4. THE BUTTON MISMATCH FIX (Universal Geometry) */
+    /* We target all 3 types: Regular Buttons, Link Buttons (<a>), and Popover Buttons */
     div.stButton > button, 
     a[data-testid="stLinkButton"], 
     button[kind="secondary"],
-    [data-testid="stBaseButton-secondary"] {
+    [data-testid="stBaseButton-secondary"],
+    div[data-testid="stPopover"] > button {
+        /* VISUAL STYLE */
         background-color: #0F172A !important; /* Dark Slate */
         color: #FFFFFF !important;
         border: none !important;
         border-radius: 6px !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         
-        /* STRICT GEOMETRY - The key to fixing the mismatch */
-        height: 45px !important;
-        min-height: 45px !important;
-        max-height: 45px !important;
+        /* GEOMETRY LOCK - The fix for mismatch */
+        box-sizing: border-box !important;
+        height: 42px !important;
+        min-height: 42px !important;
+        max-height: 42px !important;
         width: 100% !important;
-        padding: 0px !important;
         margin: 0px !important;
         
-        /* Centering */
-        display: flex !important;
+        /* ALIGNMENT */
+        display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
-        line-height: 1 !important;
+        vertical-align: middle !important;
+        line-height: normal !important; /* Resets weird Streamlit line-heights */
+        padding: 0 16px !important;     /* Horizontal padding only */
         
+        /* TEXT */
         text-decoration: none !important;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    /* Force text white inside all buttons */
-    div.stButton > button p, 
-    a[data-testid="stLinkButton"], 
-    div.stButton > button span {
-        color: #FFFFFF !important;
         font-weight: 600 !important;
         font-size: 16px !important;
     }
 
-    /* Primary Search Button Highlight */
-    div.stButton > button[kind="primary"] {
-        background-color: #4338CA !important; /* Indigo */
+    /* Force internal text color to white */
+    div.stButton > button p, 
+    div.stButton > button span,
+    a[data-testid="stLinkButton"], 
+    div[data-testid="stPopover"] > button p {
+        color: #FFFFFF !important;
     }
 
-    /* Hover Effects */
+    /* 5. Primary Search Button (Indigo) */
+    div.stButton > button[kind="primary"] {
+        background-color: #4338CA !important;
+    }
+
+    /* 6. Hover Effects */
     div.stButton > button:hover, 
-    a[data-testid="stLinkButton"]:hover {
+    a[data-testid="stLinkButton"]:hover,
+    div[data-testid="stPopover"] > button:hover {
         background-color: #334155 !important;
         color: #FFFFFF !important;
         transform: translateY(-1px);
     }
     
-    /* 5. Book Card Styling */
+    /* 7. Book Card Container */
     .book-card {
         background-color: #FFFFFF !important;
         border: 1px solid #E2E8F0 !important;
@@ -96,7 +108,7 @@ st.markdown("""
         margin-bottom: 24px;
     }
 
-    /* 6. Input Field */
+    /* 8. Input Field */
     .stTextInput input {
         background-color: #FFFFFF !important;
         color: #0F172A !important;
@@ -113,7 +125,7 @@ def init_connection():
 
 def get_db(): return init_connection().vibebooks_db
 
-# --- AI MODELS ---
+# --- AI MODELS (Original Full Config) ---
 @st.cache_resource
 def load_models():
     retriever = SentenceTransformer('all-MiniLM-L6-v2')
@@ -122,20 +134,22 @@ def load_models():
 
 retriever, ranker = load_models()
 
-# --- SMART SEARCH ---
+# --- SMART SEARCH (Strict Title + Vibe) ---
 def smart_search(query, username=None, mood=50, complexity=50):
     db = get_db()
     
-    # 1. EXACT TITLE MATCH (Strict Mode ^...$)
+    # 1. Exact Title Match (Strict Mode ^...$)
+    # Using ^ and $ ensures "Malice" matches exactly "Malice" and not "Without MAlice"
     exact_matches = list(db.books_collection.find(
         {"title": {"$regex": f"^{query}$", "$options": "i"}},
         {"_id": 0, "title": 1, "description": 1, "ratings_count": 1, "avg_rating": 1, "url": 1, "image_url": 1}
     ).limit(3))
     
+    # Force high score for exact matches
     for book in exact_matches:
         book['final_score'] = 2.0 
 
-    # 2. VIBE SEARCH
+    # 2. Vibe Search
     vibe_context = ""
     if mood < 30: vibe_context += " lighthearted funny cheerful happy"
     elif mood > 70: vibe_context += " dark serious grim intense"
@@ -145,6 +159,7 @@ def smart_search(query, username=None, mood=50, complexity=50):
     final_query = query + vibe_context
     query_vec = retriever.encode(final_query)
     
+    # Personalization
     if username:
         saved = list(db.library.find({"username": username}))
         if saved:
@@ -160,7 +175,7 @@ def smart_search(query, username=None, mood=50, complexity=50):
     ]
     vibe_candidates = list(db.books_collection.aggregate(pipeline))
 
-    # 3. RE-RANKING
+    # 3. Re-Ranking
     if vibe_candidates:
         pairs = [[final_query, doc.get('description', '')] for doc in vibe_candidates]
         scores = ranker.predict(pairs)
@@ -172,7 +187,7 @@ def smart_search(query, username=None, mood=50, complexity=50):
             pop_score = min((np.log1p(count) * rating) / 50.0, 1.0)
             doc['final_score'] = (relevance * 0.70) + (pop_score * 0.30)
 
-    # 4. MERGE
+    # 4. Merge
     seen_titles = set()
     final_results = []
     
