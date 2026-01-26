@@ -16,12 +16,26 @@ st.markdown("""
     /* Global Page Visibility */
     .stApp { background-color: #F1F5F9 !important; font-family: 'Inter', sans-serif; }
 
+    /* LIGHT BACKGROUND FOR SIDEBAR */
+    [data-testid="stSidebar"] { background-color: #F1F5F9 !important; }
+    [data-testid="stSidebar"] [data-testid="stVerticalBlock"] { background-color: #F1F5F9 !important; }
+
     /* headings and body text visibility - The "Vibe" Visibility Fix */
     h1, h2, h3, h4, h5, h6, label, [data-testid="stHeader"] { 
         color: #0F172A !important; 
         font-weight: 700 !important; 
     }
     p, span, div { color: #1E293B !important; }
+    
+    /* SIDEBAR TEXT VISIBILITY */
+    [data-testid="stSidebar"] p,
+    [data-testid="stSidebar"] span,
+    [data-testid="stSidebar"] label,
+    [data-testid="stSidebar"] h1,
+    [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] h3 { 
+        color: #0F172A !important; 
+    }
 
     /* UNIVERSAL BLACK BUTTONS (Search, Sign Out, Read Info, etc.) */
     .stButton > button, 
@@ -43,12 +57,28 @@ st.markdown("""
     .stButton > button p, 
     .stButton > button span, 
     .stButton > button label,
+    .stButton > button div,
     [data-testid="stBaseButton-popover"] p,
+    [data-testid="stBaseButton-popover"] span,
+    [data-testid="stBaseButton-popover"] div,
     div[data-testid="stPopover"] > button p,
-    div[data-testid="stPopover"] > button span {
+    div[data-testid="stPopover"] > button span,
+    div[data-testid="stPopover"] > button div {
         color: #FFFFFF !important;
         font-weight: 700 !important;
         font-size: 1rem !important;
+    }
+    
+    /* SIDEBAR BUTTON TEXT - Ensure white text on black buttons in sidebar */
+    [data-testid="stSidebar"] .stButton > button,
+    [data-testid="stSidebar"] button[kind="primary"],
+    [data-testid="stSidebar"] button[kind="secondary"] {
+        color: #FFFFFF !important;
+    }
+    [data-testid="stSidebar"] .stButton > button p,
+    [data-testid="stSidebar"] .stButton > button span,
+    [data-testid="stSidebar"] .stButton > button div {
+        color: #FFFFFF !important;
     }
 
     /* Hover effect for all buttons */
@@ -303,6 +333,7 @@ else:
 
 
                 st.markdown('</div>', unsafe_allow_html=True)
+
 
 
 
