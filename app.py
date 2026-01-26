@@ -9,31 +9,95 @@ import certifi
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="Vibe", layout="wide", page_icon="📚")
 
-# --- CUSTOM CSS (Fixed Visuals & Mismatched Buttons) ---
+# --- CUSTOM CSS (VISUAL FIXES) ---
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     
-    /* 1. Global App Background */
+    /* 1. Global App Styling */
     .stApp { 
         background-color: #F1F5F9 !important; 
         font-family: 'Inter', sans-serif; 
         color: #0F172A !important; 
     }
     
-    /* 2. Sidebar & Header Fixes */
+    /* 2. Sidebar & Toggle Button Fix */
     [data-testid="stSidebar"] { 
         background-color: #E2E8F0 !important; 
         border-right: 1px solid #CBD5E1 !important; 
     }
-    /* Fixes the invisible collapse arrow */
-    [data-testid="stSidebarCollapsedControl"] {
+    
+    /* This makes the collapse arrow visible (Dark Slate color) */
+    [data-testid="stSidebarCollapsedControl"], 
+    [data-testid="stSidebarNav"] > button,
+    button[kind="header"] {
         color: #0F172A !important;
         background-color: transparent !important;
     }
-    header { background-color: transparent !important; }
 
-    /* 3. Book Card Container */
+    /* 3. Text Visibility */
+    h1, h2, h3, h4, h5, h6, [data-testid="stHeader"] { 
+        color: #0F172A !important; 
+        font-weight: 700 !important; 
+    }
+    p, span, div, label, li { 
+        color: #334155 !important; 
+    }
+
+    /* 4. UNIFIED BUTTON ARCHITECTURE (The Fix) */
+    /* We target <a> (links) and <button> (actions) to share EXACT styling */
+    
+    .stButton > button, 
+    a[data-testid="stLinkButton"], 
+    [data-testid="stBaseButton-secondary"],
+    div[data-testid="stPopover"] > button {
+        background-color: #0F172A !important; /* Unified Dark Color */
+        color: #FFFFFF !important;
+        border: none !important;
+        border-radius: 8px !important;
+        
+        /* Force identical geometry */
+        min-height: 3rem !important; 
+        height: auto !important;
+        width: 100% !important;
+        padding: 0px 16px !important;
+        
+        /* Centering Content */
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        
+        /* Typography */
+        font-weight: 600 !important;
+        text-decoration: none !important;
+        line-height: 1.5 !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    /* Force Internal Text Colors to White */
+    .stButton > button p, 
+    .stButton > button span,
+    a[data-testid="stLinkButton"], 
+    div[data-testid="stPopover"] > button p {
+        color: #FFFFFF !important;
+        font-weight: 600 !important;
+    }
+
+    /* Primary Search Button Highlight (Indigo) */
+    div.stButton > button[kind="primary"] {
+        background-color: #4338CA !important;
+    }
+
+    /* Hover States */
+    .stButton > button:hover, 
+    a[data-testid="stLinkButton"]:hover, 
+    div[data-testid="stPopover"] > button:hover {
+        background-color: #334155 !important; /* Lighter Slate on hover */
+        transform: translateY(-1px);
+        color: #FFFFFF !important;
+    }
+
+    /* 5. Book Card Styling */
     .book-card {
         background-color: #FFFFFF !important; 
         border: 1px solid #E2E8F0 !important; 
@@ -41,64 +105,9 @@ st.markdown("""
         padding: 24px; 
         margin-bottom: 24px;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        transition: transform 0.2s ease-in-out;
-    }
-    .book-card:hover { 
-        transform: translateY(-2px); 
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
-        border-color: #6366F1 !important; 
     }
 
-    /* 4. Text Visibility Assurance */
-    h1, h2, h3, h4, h5, h6 { color: #1E293B !important; font-weight: 700 !important; }
-    p, span, div, label { color: #475569; }
-    .stMarkdown p { color: #334155 !important; }
-
-    /* 5. UNIFIED BUTTON STYLING (The Mismatch Fix) */
-    /* Targets: Search, Link Buttons (Read/PDF), and Action Buttons (Save/Rate) */
-    div.stButton > button, 
-    a[data-testid="stLinkButton"], 
-    button[kind="secondary"],
-    [data-testid="stBaseButton-secondary"],
-    div[data-testid="stPopover"] > button {
-        background-color: #1E293B !important; /* Unified Dark Slate Color */
-        color: #FFFFFF !important;
-        border: none !important;
-        border-radius: 8px !important;
-        min-height: 45px !important; /* Force equal height */
-        height: auto !important;
-        width: 100% !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        text-decoration: none !important;
-        font-weight: 600 !important;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    /* Force text inside buttons to be white */
-    div.stButton > button p, 
-    div.stButton > button span,
-    a[data-testid="stLinkButton"],
-    div[data-testid="stPopover"] > button p {
-        color: #FFFFFF !important;
-    }
-
-    /* Primary Search Button Highlight */
-    div.stButton > button[kind="primary"] {
-        background-color: #4338CA !important; /* Indigo */
-    }
-
-    /* Hover Effects */
-    div.stButton > button:hover, 
-    a[data-testid="stLinkButton"]:hover,
-    div[data-testid="stPopover"] > button:hover {
-        background-color: #334155 !important; /* Lighter Slate */
-        color: #FFFFFF !important;
-        transform: translateY(-1px);
-    }
-
-    /* 6. Input Field */
+    /* 6. Input Field Styling */
     .stTextInput input { 
         background-color: #FFFFFF !important; 
         border: 1px solid #CBD5E1 !important; 
@@ -116,7 +125,7 @@ def init_connection():
 
 def get_db(): return init_connection().vibebooks_db
 
-# --- AI MODELS (Original Full Config) ---
+# --- AI MODELS ---
 @st.cache_resource
 def load_models():
     retriever = SentenceTransformer('all-MiniLM-L6-v2')
