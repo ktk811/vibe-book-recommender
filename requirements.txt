@@ -1,0 +1,6 @@
+streamlit
+pymongo
+sentence-transformers
+numpy
+requests
+certifi
