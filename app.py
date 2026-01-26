@@ -14,20 +14,18 @@ st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     
-    /* Global Background & Text */
+    /* Global App Background */
     .stApp { 
         background-color: #F1F5F9 !important; 
         font-family: 'Inter', sans-serif; 
-        color: #0F172A !important; 
     }
     
     /* Sidebar Fix */
     [data-testid="stSidebar"] { 
         background-color: #E2E8F0 !important; 
-        border-right: 1px solid #CBD5E1 !important; 
     }
     
-    /* Book Card Container */
+    /* Book Card Styling */
     .book-card {
         background-color: #FFFFFF !important; 
         border: 1px solid #E2E8F0 !important; 
@@ -35,72 +33,67 @@ st.markdown("""
         padding: 24px; 
         margin-bottom: 24px;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        transition: all 0.2s ease-in-out;
-    }
-    .book-card:hover { 
-        transform: translateY(-4px); 
-        box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.1); 
-        border-color: #6366F1 !important; 
     }
     
     /* Typography Visibility */
-    h1, h2, h3 { color: #1E293B !important; font-weight: 700 !important; }
-    p, span, div, label { color: #334155 !important; }
-    .stMarkdown p { color: #475569 !important; }
+    h1, h2, h3 { color: #1E293B !important; }
+    p, span, label { color: #334155 !important; }
 
-    /* PRIMARY BUTTON (Search/Login) - Force White Text */
+    /* 1. PRIMARY BUTTON (SEARCH) - Force White Text */
     div.stButton > button[kind="primary"] { 
         background-color: #4338CA !important; 
-        color: #FFFFFF !important; 
-        border: none !important; 
-        border-radius: 8px !important; 
-        height: 3rem; 
-        font-weight: 600 !important; 
+        border: none !important;
+        border-radius: 8px !important;
+        height: 3rem;
         width: 100%;
-        box-shadow: 0 4px 6px rgba(67, 56, 202, 0.2) !important;
     }
-    div.stButton > button[kind="primary"]:hover { 
-        background-color: #3730A3 !important; 
-        color: #FFFFFF !important; 
+    
+    /* This targets the text inside the primary button specifically */
+    div.stButton > button[kind="primary"] p {
+        color: white !important;
+        font-weight: 600 !important;
     }
 
-    /* SECONDARY BUTTONS (Read/PDF/Save) - Fix Blackout */
+    /* 2. SECONDARY BUTTONS (READ/PDF/SAVE) - Fix Blackout */
     div.stButton > button[kind="secondary"] { 
-        background-color: #FFFFFF !important; 
+        background-color: #F8FAFC !important; /* Very light grey, almost white */
         color: #1E293B !important; 
         border: 1px solid #CBD5E1 !important; 
         border-radius: 8px !important;
-        font-weight: 500 !important;
         width: 100%;
     }
-    div.stButton > button[kind="secondary"]:hover { 
-        border-color: #4338CA !important; 
-        color: #4338CA !important; 
-        background-color: #F8FAFC !important; 
-    }
 
-    /* RATE POPOVER UI FIX */
-    button[data-testid="baseButton-headerNoPadding"] {
-        background-color: #F1F5F9 !important;
-        border: 1px solid #CBD5E1 !important;
+    /* Force text color for secondary buttons */
+    div.stButton > button[kind="secondary"] p {
         color: #1E293B !important;
     }
 
-    /* Input Field Fix */
-    .stTextInput input { 
-        background-color: #FFFFFF !important; 
-        border: 1px solid #CBD5E1 !important; 
-        border-radius: 8px; 
-        color: #0F172A !important; 
+    /* Hover State for Secondary Buttons */
+    div.stButton > button[kind="secondary"]:hover { 
+        border-color: #4338CA !important; 
+        color: #4338CA !important;
+        background-color: #FFFFFF !important;
     }
     
-    /* Slider Label Visibility */
-    .stSlider [data-testid="stTickBarMin"], .stSlider [data-testid="stTickBarMax"] {
-        color: #64748B !important;
+    div.stButton > button[kind="secondary"]:hover p {
+        color: #4338CA !important;
+    }
+
+    /* 3. INPUT FIELD FIX */
+    .stTextInput input { 
+        background-color: #FFFFFF !important; 
+        color: #0F172A !important; 
+        border: 1px solid #CBD5E1 !important;
+    }
+
+    /* 4. POPOVER (RATE) FIX */
+    div[data-testid="stPopover"] > button {
+        background-color: #F8FAFC !important;
+        color: #1E293B !important;
+        border: 1px solid #CBD5E1 !important;
     }
 </style>
 """, unsafe_allow_html=True)
-
 # --- DATABASE ---
 @st.cache_resource
 def init_connection():
@@ -318,3 +311,4 @@ else:
 
 
                 st.markdown('</div>', unsafe_allow_html=True)
+
