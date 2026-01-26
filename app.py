@@ -8,119 +8,40 @@ import certifi
 
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="Vibe", layout="wide", page_icon="📚")
+# --- CUSTOM CSS ---
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-   
-    /* Global Page Visibility */
-    .stApp { background-color: #F1F5F9 !important; font-family: 'Inter', sans-serif; }
-    /* LIGHT BACKGROUND FOR SIDEBAR */
-    [data-testid="stSidebar"] { background-color: #F1F5F9 !important; }
-    [data-testid="stSidebar"] [data-testid="stVerticalBlock"] { background-color: #F1F5F9 !important; }
-    /* headings and body text visibility - The "Vibe" Visibility Fix */
-    h1, h2, h3, h4, h5, h6, label, [data-testid="stHeader"] {
-        color: #0F172A !important;
-        font-weight: 700 !important;
-    }
-    p, span, div { color: #1E293B !important; }
-   
-    /* SIDEBAR TEXT VISIBILITY */
-    [data-testid="stSidebar"] p,
-    [data-testid="stSidebar"] span,
-    [data-testid="stSidebar"] label,
-    [data-testid="stSidebar"] h1,
-    [data-testid="stSidebar"] h2,
-    [data-testid="stSidebar"] h3 {
-        color: #0F172A !important;
-    }
-    /* UNIVERSAL WHITE BUTTONS (Search, Sign Out, Read Info, etc.) */
-    div.stButton > button:first-child,
-    button[kind="primary"],
-    button[kind="secondary"],
-    [data-testid="stBaseButton-secondary"],
-    [data-testid="stBaseButton-popover"],
-    [data-testid="stBaseButton-headerNoPadding"],
-    div[data-testid="stPopover"] > button,
-    button {
-        background-color: #FFFFFF !important;
-        color: #000000 !important;
-        border: 2px solid #000000 !important;
-        border-radius: 8px !important;
-        opacity: 1 !important;
-        height: 3rem !important;
-    }
-    /* TARGET WHITE BACKGROUND BUTTONS WITH BLACK TEXT */
-    div.stButton > button:first-child,
-    [data-testid="stBaseButton"] button,
-    button {
-        color: #000000 !important;
-    }
-   
-    div.stButton > button:first-child *,
-    [data-testid="stBaseButton"] button *,
-    button * {
-        color: #000000 !important;
-    }
-   
-    /* Collapse sidebar button */
-    button[aria-label="Collapse sidebar"] {
-        color: #000000 !important;
-        background-color: #FFFFFF !important;
-    }
-    button[aria-label="Collapse sidebar"] * {
-        color: #000000 !important;
-    }
-   
-    /* Icon buttons and popover buttons */
-    [data-testid="stBaseButton-secondary"] {
-        color: #000000 !important;
-    }
-    [data-testid="stBaseButton-secondary"] * {
-        color: #000000 !important;
-    }
-   
-    /* SIDEBAR BUTTON TEXT - Ensure black text on white buttons in sidebar */
-    [data-testid="stSidebar"] div.stButton > button:first-child,
-    [data-testid="stSidebar"] button[kind="primary"],
-    [data-testid="stSidebar"] button[kind="secondary"] {
-        color: #000000 !important;
-    }
-    [data-testid="stSidebar"] div.stButton > button:first-child p,
-    [data-testid="stSidebar"] div.stButton > button:first-child span,
-    [data-testid="stSidebar"] div.stButton > button:first-child div {
-        color: #000000 !important;
-    }
-    /* Hover effect for all buttons */
-    div.stButton > button:first-child:hover,
-    button:hover {
-        background-color: #F1F5F9 !important;
-        border-color: #334155 !important;
-    }
-    div.stButton > button:first-child:hover *,
-    button:hover * { color: #000000 !important; }
-    /* Add for icons/symbols */
-    div.stButton > button:first-child svg,
-    div.stButton > button:first-child path,
-    div.stButton > button:first-child i,
-    button svg,
-    button path,
-    button i {
-        fill: #000000 !important;
-        color: #000000 !important;
-    }
-    /* Book Card & Input Box styling */
+    
+    .stApp { background-color: #F1F5F9; font-family: 'Inter', sans-serif; color: #0F172A; }
+    [data-testid="stSidebar"] { background-color: #E2E8F0; border-right: 1px solid #CBD5E1; }
+    
     .book-card {
-        background-color: #FFFFFF !important;
-        border: 1px solid #CBD5E1 !important;
-        border-radius: 12px;
-        padding: 24px;
-        margin-bottom: 24px;
+        background-color: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px;
+        padding: 24px; margin-bottom: 24px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s ease-in-out;
     }
-    .stTextInput input {
-        background-color: #FFFFFF !important;
-        color: #000000 !important;
-        border: 2px solid #CBD5E1 !important;
+    .book-card:hover { 
+        transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); border-color: #6366F1; 
     }
+    
+    h1, h2, h3 { color: #1E293B !important; font-weight: 700 !important; }
+    p, span, div { color: #475569; }
+    
+    div.stButton > button[kind="primary"] { 
+        background-color: #4338CA !important; border: none !important; border-radius: 6px !important; 
+        height: 2.8rem; font-weight: 600 !important; font-size: 1rem !important; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    div.stButton > button[kind="primary"], div.stButton > button[kind="primary"] * { color: #FFFFFF !important; }
+    div.stButton > button[kind="primary"]:hover { background-color: #3730A3 !important; }
+    
+    div.stButton > button[kind="secondary"] { 
+        background-color: #FFFFFF !important; color: #334155 !important; border: 1px solid #CBD5E1 !important; border-radius: 6px !important;
+    }
+    div.stButton > button[kind="secondary"]:hover { border-color: #4338CA !important; color: #4338CA !important; background-color: #EEF2FF !important; }
+    
+    .stTextInput input { background-color: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 6px; color: #0F172A; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -436,6 +357,7 @@ else:
 
 
                 st.markdown('</div>', unsafe_allow_html=True)
+
 
 
 
