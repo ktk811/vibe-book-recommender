@@ -9,34 +9,26 @@ import certifi
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="Vibe", layout="wide", page_icon="📚")
 # --- CUSTOM CSS (High Contrast: Black Buttons & Visible Text) ---
+# --- CUSTOM CSS (Forced Visibility for Button Text) ---
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     
-    /* 1. Page & Sidebar Background */
+    /* 1. Page Background & Global Text */
     .stApp { 
         background-color: #F1F5F9 !important; 
         font-family: 'Inter', sans-serif; 
     }
-    [data-testid="stSidebar"] { 
-        background-color: #E2E8F0 !important; 
-    }
-    
-    /* 2. TEXT VISIBILITY - Forces all headings and text to be dark/visible */
     h1, h2, h3, h4, h5, h6 { 
         color: #0F172A !important; 
         font-weight: 700 !important; 
     }
+    /* This ensures all general text is dark and visible */
     p, span, label, div { 
         color: #1E293B !important; 
     }
-    /* Specifically target book descriptions */
-    .stMarkdown p { 
-        color: #334155 !important; 
-    }
 
-    /* 3. BUTTONS - ALL PURE BLACK WITH WHITE TEXT */
-    /* Targets every possible Streamlit button type */
+    /* 2. BUTTONS - UNIVERSAL BLACK BACKGROUND */
     .stButton > button, 
     button[kind="primary"], 
     button[kind="secondary"],
@@ -45,33 +37,39 @@ st.markdown("""
     [data-testid="stBaseButton-headerNoPadding"],
     div[data-testid="stPopover"] > button {
         background-color: #000000 !important;
-        color: #FFFFFF !important;
         border: 2px solid #000000 !important;
         border-radius: 8px !important;
         opacity: 1 !important;
+        height: auto !important;
     }
 
-    /* Force the actual text/labels inside the buttons to be White */
+    /* 3. BUTTON TEXT - THE FIX */
+    /* Target every possible text container inside buttons to force them to White */
     .stButton > button p, 
-    .stButton > button span,
-    button[kind="primary"] p,
-    button[kind="primary"] span,
+    .stButton > button span, 
+    .stButton > button label,
+    [data-testid="stBaseButton-secondary"] p,
+    [data-testid="stBaseButton-secondary"] span,
     [data-testid="stBaseButton-popover"] p,
-    div[data-testid="stPopover"] > button p {
+    div[data-testid="stPopover"] > button p,
+    div[data-testid="stPopover"] > button span {
         color: #FFFFFF !important;
         font-weight: 600 !important;
+        text-decoration: none !important;
     }
 
-    /* Hover effect - Dark Grey */
+    /* 4. HOVER STATE - Keep text white while changing background to dark grey */
     .stButton > button:hover {
         background-color: #1E293B !important;
         border-color: #1E293B !important;
     }
-    .stButton > button:hover p, .stButton > button:hover span {
+    .stButton > button:hover p, 
+    .stButton > button:hover span, 
+    .stButton > button:hover label {
         color: #FFFFFF !important;
     }
 
-    /* 4. BOOK CARD - White background with border */
+    /* 5. BOOK CARD & INPUTS */
     .book-card {
         background-color: #FFFFFF !important;
         border: 1px solid #CBD5E1 !important;
@@ -80,8 +78,6 @@ st.markdown("""
         margin-bottom: 24px;
         box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
-
-    /* 5. INPUT FIELD - Solid border and black text */
     .stTextInput input {
         background-color: #FFFFFF !important;
         color: #000000 !important;
@@ -320,6 +316,7 @@ else:
 
 
                 st.markdown('</div>', unsafe_allow_html=True)
+
 
 
 
