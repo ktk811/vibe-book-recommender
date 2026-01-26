@@ -8,7 +8,6 @@ import certifi
 
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="Vibe", layout="wide", page_icon="📚")
-# --- DEFINITIVE CSS (Solid Black Buttons & High-Contrast Text) ---
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -53,20 +52,27 @@ st.markdown("""
         height: 3rem !important;
     }
 
-    /* FORCED WHITE BUTTON TEXT - Target internal p, span, and label tags */
+    /* FORCED WHITE BUTTON TEXT - Target ALL internal text elements */
     .stButton > button p, 
     .stButton > button span, 
     .stButton > button label,
     .stButton > button div,
+    .stButton > button *,
+    button p, 
+    button span, 
+    button label,
+    button div,
+    button *,
     [data-testid="stBaseButton-popover"] p,
     [data-testid="stBaseButton-popover"] span,
     [data-testid="stBaseButton-popover"] div,
+    [data-testid="stBaseButton-popover"] *,
     div[data-testid="stPopover"] > button p,
     div[data-testid="stPopover"] > button span,
-    div[data-testid="stPopover"] > button div {
+    div[data-testid="stPopover"] > button div,
+    div[data-testid="stPopover"] > button * {
         color: #FFFFFF !important;
-        font-weight: 700 !important;
-        font-size: 1rem !important;
+        font-weight: 600 !important;
     }
     
     /* SIDEBAR BUTTON TEXT - Ensure white text on black buttons in sidebar */
@@ -103,6 +109,7 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
+
 # --- UPDATED SEARCH LOGIC (STRICT TITLE MATCH) ---
 # Update this line inside your smart_search function:
 def smart_search(query, username=None, mood=50, complexity=50):
@@ -333,6 +340,7 @@ else:
 
 
                 st.markdown('</div>', unsafe_allow_html=True)
+
 
 
 
