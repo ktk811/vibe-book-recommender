@@ -3,5 +3,3 @@ mysqlclient
 sentence-transformers
 numpy
 requests
-gunicorn
-whitenoise
