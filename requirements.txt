@@ -1,6 +1,7 @@
-streamlit
-pymongo
+django
+mysqlclient
 sentence-transformers
 numpy
 requests
-certifi
+gunicorn
+whitenoise

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vibe — Book Recommender</title>
+<meta name="description" content="Find your next read by vibe. AI-powered semantic book recommendations.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<style>
+  body{background:#0f172a;color:#e2e8f0;font-family:'Segoe UI',sans-serif;min-height:100vh}
+  .navbar-brand{font-size:1.6rem;font-weight:700;color:#818cf8!important;letter-spacing:-0.5px}
+  .auth-card{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:2rem;max-width:420px;margin:5rem auto}
+  .nav-tabs .nav-link{color:#94a3b8;border:none;border-bottom:2px solid transparent}
+  .nav-tabs .nav-link.active{color:#818cf8;border-bottom-color:#818cf8;background:transparent}
+  .form-control{background:#0f172a;border:1px solid #334155;color:#e2e8f0}
+  .form-control:focus{background:#0f172a;border-color:#818cf8;color:#e2e8f0;box-shadow:0 0 0 3px rgba(129,140,248,.2)}
+  .btn-primary{background:#818cf8;border:none}
+  .btn-primary:hover{background:#6366f1}
+  .btn-outline-secondary{border-color:#475569;color:#94a3b8}
+  .btn-outline-secondary:hover{background:#1e293b;color:#e2e8f0}
+  .search-section{background:#1e293b;border-bottom:1px solid #334155;padding:1.25rem 0;position:sticky;top:56px;z-index:100}
+  .book-card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:1.25rem;margin-bottom:1rem;transition:border-color .2s}
+  .book-card:hover{border-color:#818cf8}
+  .book-img{width:90px;height:130px;object-fit:cover;border-radius:8px;flex-shrink:0;background:#334155}
+  .badge-genre{background:#1e3a5f;color:#93c5fd;font-size:.7rem;margin-right:3px;margin-bottom:3px;padding:3px 7px;border-radius:999px;display:inline-block}
+  .rating-stars{color:#fbbf24;font-size:.85rem}
+  .sidebar-offcanvas{background:#1e293b;border-left:1px solid #334155}
+  .lib-item{display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid #334155}
+  .range-label{font-size:.8rem;color:#64748b;display:flex;justify-content:space-between}
+  .spinner-overlay{display:none;text-align:center;padding:3rem 0}
+  #noResults{display:none;text-align:center;padding:3rem 0;color:#475569}
+  .alert-sm{font-size:.85rem;padding:.4rem .75rem;margin-bottom:.75rem}
+  input[type=range]::-webkit-slider-thumb{background:#818cf8}
+</style>
+</head>
+<body>
+
+<nav class="navbar navbar-dark" style="background:#1e293b;border-bottom:1px solid #334155">
+  <div class="container">
+    <span class="navbar-brand">📚 Vibe</span>
+    {% if logged_in %}
+    <div class="d-flex align-items-center gap-2">
+      <span class="text-secondary small">{{ username }}</span>
+      <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="offcanvas" data-bs-target="#libraryPanel">My Library</button>
+      <a href="/logout/" class="btn btn-sm btn-outline-secondary">Sign Out</a>
+    </div>
+    {% endif %}
+  </div>
+</nav>
+
+{% if not logged_in %}
+<!-- AUTH PANEL -->
+<div class="auth-card">
+  <h1 class="text-center mb-1" style="font-size:1.8rem;font-weight:700;color:#818cf8">Vibe</h1>
+  <p class="text-center text-secondary small mb-3">Find books by how they make you feel</p>
+
+  {% if error %}<div class="alert alert-danger alert-sm">{{ error }}</div>{% endif %}
+  {% if reg_error %}<div class="alert alert-danger alert-sm">{{ reg_error }}</div>{% endif %}
+  {% if reg_success %}<div class="alert alert-success alert-sm">{{ reg_success }}</div>{% endif %}
+
+  <ul class="nav nav-tabs mb-3" id="authTabs">
+    <li class="nav-item"><button class="nav-link {% if not reg_success %}active{% endif %}" data-bs-toggle="tab" data-bs-target="#loginTab">Login</button></li>
+    <li class="nav-item"><button class="nav-link {% if reg_success %}active{% endif %}" data-bs-toggle="tab" data-bs-target="#registerTab">Sign Up</button></li>
+  </ul>
+  <div class="tab-content">
+    <div class="tab-pane fade {% if not reg_success %}show active{% endif %}" id="loginTab">
+      <form method="post" action="/login/">
+        {% csrf_token %}
+        <div class="mb-3"><input class="form-control" name="username" placeholder="Username" required></div>
+        <div class="mb-3"><input class="form-control" type="password" name="password" placeholder="Password" required></div>
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+      </form>
+    </div>
+    <div class="tab-pane fade {% if reg_success %}show active{% endif %}" id="registerTab">
+      <form method="post" action="/register/">
+        {% csrf_token %}
+        <div class="mb-3"><input class="form-control" name="username" placeholder="Choose a username" required></div>
+        <div class="mb-3"><input class="form-control" type="password" name="password" placeholder="Choose a password" required></div>
+        <button type="submit" class="btn btn-primary w-100">Create Account</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% else %}
+<!-- MAIN APP -->
+<div class="search-section">
+  <div class="container">
+    <form id="searchForm" class="row align-items-end g-2">
+      <div class="col-md-5">
+        <input id="searchInput" type="text" class="form-control" placeholder="Describe a vibe, theme, or book title..." required>
+      </div>
+      <div class="col-md-2">
+        <label class="range-label"><span>😊 Mood</span><span>😈</span></label>
+        <input id="moodSlider" type="range" class="form-range" min="0" max="100" value="50">
+      </div>
+      <div class="col-md-2">
+        <label class="range-label"><span>📖 Simple</span><span>🧠</span></label>
+        <input id="complexSlider" type="range" class="form-range" min="0" max="100" value="50">
+      </div>
+      <div class="col-md-3">
+        <button type="submit" class="btn btn-primary w-100">Search</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="container mt-3">
+  <div class="spinner-overlay" id="spinner">
+    <div class="spinner-border text-indigo" style="color:#818cf8"></div>
+    <p class="mt-2 text-secondary small">Analyzing vibe...</p>
+  </div>
+  <div id="noResults"><p>No results yet. Try describing a mood, theme, or genre.</p></div>
+  <div id="results"></div>
+</div>
+
+<!-- Library Offcanvas -->
+<div class="offcanvas offcanvas-end sidebar-offcanvas" id="libraryPanel" tabindex="-1">
+  <div class="offcanvas-header border-bottom" style="border-color:#334155!important">
+    <h5 class="offcanvas-title" style="color:#818cf8">My Library</h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body" id="libraryBody">
+    <p class="text-secondary small">Loading...</p>
+  </div>
+</div>
+
+
+<script>
+const CSRF = '{{ csrf_token }}';
+
+function stars(r){
+  if(!r) return '';
+  let s='';
+  for(let i=1;i<=5;i++) s += i<=Math.round(r)?'★':'☆';
+  return `<span class="rating-stars">${s}</span> <span class="text-secondary small">${r}</span>`;
+}
+
+function buildCard(b, idx){
+  const img = b.image_url ? b.image_url : 'https://placehold.co/90x130/1e293b/475569?text=No+Cover';
+  const genreBadges = b.genres ? b.genres.split('|').map(g=>`<span class="badge-genre">${g.trim()}</span>`).join('') : '';
+  const ratingCount = b.ratings_count ? `<span class="text-secondary small">(${b.ratings_count.toLocaleString()} ratings)</span>` : '';
+  return `
+  <div class="book-card" id="card-${idx}">
+    <div class="d-flex gap-3">
+      <img src="${img}" class="book-img" onerror="this.src='https://placehold.co/90x130/1e293b/475569?text=No+Cover'" alt="${b.title}">
+      <div class="flex-grow-1">
+        <h5 class="mb-1" style="color:#e2e8f0">${b.title}</h5>
+        <p class="small text-secondary mb-1">${b.authors || ''}</p>
+        <div class="mb-1">${stars(b.avg_rating)} ${ratingCount}</div>
+        <div class="mb-2">${genreBadges}</div>
+        <p class="small" style="color:#94a3b8;line-height:1.5">${b.description || 'No description available.'}</p>
+        <div class="d-flex gap-2 flex-wrap mt-2">
+          <a href="${b.url}" target="_blank" class="btn btn-sm btn-outline-secondary">Read Info</a>
+          <a href="https://oceanofpdf.com/?s=${encodeURIComponent(b.title)}" target="_blank" class="btn btn-sm btn-outline-secondary">PDF Search</a>
+          <button class="btn btn-sm btn-outline-secondary save-btn" data-title="${b.title}" data-url="${b.url}">+ Save</button>
+          <div class="d-flex align-items-center gap-2">
+            <input type="range" min="1" max="5" value="3" class="form-range rate-slider" style="width:80px" id="rate-${idx}" data-title="${b.title}">
+            <button class="btn btn-sm btn-outline-secondary rate-btn" data-idx="${idx}" data-title="${b.title}">Rate</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// Search — AJAX call to /api/search/
+$('#searchForm').on('submit', function(e){
+  e.preventDefault();
+  const q = $('#searchInput').val().trim();
+  if(!q) return;
+  $('#results').empty();
+  $('#noResults').hide();
+  $('#spinner').show();
+  $.get('/api/search/', {q: q, mood: $('#moodSlider').val(), complexity: $('#complexSlider').val()}, function(data){
+    $('#spinner').hide();
+    if(!data.results || data.results.length === 0){ $('#noResults').show(); return; }
+    data.results.forEach((b, i) => $('#results').append(buildCard(b, i)));
+  }).fail(function(){ $('#spinner').hide(); alert('Search failed. Please try again.'); });
+});
+
+// Save book — AJAX POST
+$(document).on('click', '.save-btn', function(){
+  const btn = $(this);
+  $.ajax({url:'/api/save/', method:'POST',
+    data: JSON.stringify({title: btn.data('title'), url: btn.data('url')}),
+    contentType:'application/json',
+    headers:{'X-CSRFToken': CSRF},
+    success: function(r){ btn.text(r.saved ? '✓ Saved' : 'Already saved').prop('disabled', true); }
+  });
+});
+
+// Rate book — AJAX POST
+$(document).on('click', '.rate-btn', function(){
+  const idx = $(this).data('idx');
+  const title = $(this).data('title');
+  const rating = $(`#rate-${idx}`).val();
+  $.ajax({url:'/api/rate/', method:'POST',
+    data: JSON.stringify({title: title, rating: rating}),
+    contentType:'application/json',
+    headers:{'X-CSRFToken': CSRF},
+    success: function(){ alert('Rating submitted!'); }
+  });
+});
+
+// Load library when offcanvas opens
+document.getElementById('libraryPanel').addEventListener('show.bs.offcanvas', function(){
+  $.get('/api/library/', function(data){
+    if(!data.library || data.library.length === 0){
+      $('#libraryBody').html('<p class="text-secondary small">Your library is empty. Save books from search results.</p>'); return;
+    }
+    let html = '';
+    data.library.forEach(item => {
+      html += `<div class="lib-item">
+        <a href="${item.url || '#'}" target="_blank" class="text-decoration-none" style="color:#c7d2fe;font-size:.9rem">${item.title}</a>
+        <button class="btn btn-sm btn-outline-secondary del-btn" data-title="${item.title}">✕</button>
+      </div>`;
+    });
+    $('#libraryBody').html(html);
+  });
+});
+
+// Delete from library — AJAX POST
+$(document).on('click', '.del-btn', function(){
+  const btn = $(this);
+  $.ajax({url:'/api/delete/', method:'POST',
+    data: JSON.stringify({title: btn.data('title')}),
+    contentType:'application/json',
+    headers:{'X-CSRFToken': CSRF},
+    success: function(){ btn.closest('.lib-item').remove(); }
+  });
+});
+</script>
+{% endif %}
+</body>
+</html>
